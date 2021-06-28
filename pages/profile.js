@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Auth } from 'aws-amplify'
 import '../configureAmplify'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
@@ -18,7 +20,7 @@ const Profile = () => {
 
   useEffect(() => {
     checkUser()
-    console.log(user);
+    console.log(user)
   }, [])
 
   const checkUser = async () => {
@@ -36,18 +38,31 @@ const Profile = () => {
     setFormState({ ...formstate, [e.target.name]: e.target.value })
   }
 
+  const toastError = (message) => {
+    toast.error(message, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      });
+  }
+
   const signUp = async () => {
     try {
       await Auth.signUp({
         username: email,
         password,
         attributes: {
-          email
-        }
+          email,
+        },
       })
       setUiState('confirmSignUp')
     } catch (error) {
-      console.log({error});
+      // console.log({ error })
+      toastError(error.message)
     }
   }
   const confirmSignUp = async () => {
@@ -56,7 +71,8 @@ const Profile = () => {
       setUiState('signedIn')
       signIn()
     } catch (error) {
-      console.log({error});
+      // console.log({ error })
+      toastError(error.message)
     }
   }
   const signIn = async () => {
@@ -65,7 +81,8 @@ const Profile = () => {
       setUiState('signedIn')
       checkUser()
     } catch (error) {
-      console.log({error});
+      // console.log({ error })
+      toastError(error.message)
     }
   }
   const forgotPassword = async () => {
@@ -73,7 +90,8 @@ const Profile = () => {
       await Auth.forgotPassword(email)
       setUiState('forgotPasswordSubmit')
     } catch (error) {
-      console.log({error});
+      // console.log({ error })
+      toastError(error.message)
     }
   }
   const forgotPasswordSubmit = async () => {
@@ -82,25 +100,49 @@ const Profile = () => {
       // setUiState('signIn')
       signIn() //auto sign in
     } catch (error) {
-      console.log({error});
+      // console.log({ error })
+      toastError(error.message)
     }
   }
 
   return (
     <div className='bg-gray-50 min-h-screen'>
+      <ToastContainer
+        position='top-center'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className='flex flex-col items-center'>
         <div className='max-w-full sn:w-540 mt-14'>
           <div className='bg-white py-14 px-16 shadow-form rounded'>
             {uiState === 'signUp' && (
-              <SignUp onChange={onChange} setUiState={setUiState} signUp={signUp } />
+              <SignUp
+                onChange={onChange}
+                setUiState={setUiState}
+                signUp={signUp}
+              />
             )}
             {uiState === 'confirmSignUp' && (
-              <ConfirmSignUp onChange={onChange} setUiState={setUiState} confirmSignUp={confirmSignUp} />
+              <ConfirmSignUp
+                onChange={onChange}
+                setUiState={setUiState}
+                confirmSignUp={confirmSignUp}
+              />
             )}
             {uiState === 'signIn' && (
-              <SignIn onChange={onChange} setUiState={setUiState} signIn={signIn} />
+              <SignIn
+                onChange={onChange}
+                setUiState={setUiState}
+                signIn={signIn}
+              />
             )}
-            {(uiState === 'signedIn' && user) && (
+            {uiState === 'signedIn' && user && (
               <div>
                 <p className='text-x1'>Welcome, {user.attributes.email}</p>
                 <button
@@ -116,10 +158,17 @@ const Profile = () => {
               </div>
             )}
             {uiState === 'forgotPassword' && (
-              <ForgotPassword onChange={onChange} setUiState={setUiState} forgotPassword={forgotPassword}  />
+              <ForgotPassword
+                onChange={onChange}
+                setUiState={setUiState}
+                forgotPassword={forgotPassword}
+              />
             )}
             {uiState === 'forgotPasswordSubmit' && (
-              <ForgotPasswordSubmit onChange={onChange} forgotPasswordSubmit={forgotPasswordSubmit} />
+              <ForgotPasswordSubmit
+                onChange={onChange}
+                forgotPasswordSubmit={forgotPasswordSubmit}
+              />
             )}
           </div>
         </div>

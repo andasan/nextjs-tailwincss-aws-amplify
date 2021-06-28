@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import Link from 'next/link'
+import NextNprogress from 'nextjs-progressbar'
 
 const MyApp = ({ Component, pageProps }) => (
   <div>
@@ -14,6 +15,13 @@ const MyApp = ({ Component, pageProps }) => (
         <a className='ml-4'>Protected</a>
       </Link>
     </nav>
+    <NextNprogress
+      color='#dc2878'
+      startPosition={0.3}
+      stopDelayMs={200}
+      height={5}
+      showOnShallow={true}
+    />
     <Component {...pageProps} />
   </div>
 )
