@@ -8,7 +8,6 @@ export default function Protected() {
 
   useEffect(() => {
     checkUser()
-    console.log(user)
   }, [])
 
   const checkUser = async () => {
