@@ -21,7 +21,10 @@ export default function SignIn({ onChange, setUiState, signIn }) {
         </label>
         <Input type='password' onChange={onChange} name="password" />
       </div>
-      <button className="text-white w-full mt-6 bg-pink-600 p-3 rounded"> Sign In</button>
+      <button 
+        onClick={signIn}
+        className="text-white w-full mt-6 bg-pink-600 p-3 rounded"
+      > Sign In</button>
       
       <SocialSignIn />
       <p className='mt-12 test-sm font-light'>

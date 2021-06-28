@@ -3,6 +3,10 @@ import { Auth } from 'aws-amplify'
 import '../configureAmplify'
 
 import SignIn from '../components/SignIn'
+import SignUp from '../components/SignUp'
+import ConfirmSignUp from '../components/ConfirmSignUp'
+import ForgotPasswordSubmit from '../components/ForgotPasswordSubmit'
+import ForgotPassword from '../components/ForgotPassword'
 
 const initialState = { email: '', password: '', authCode: '' }
 
@@ -34,6 +38,12 @@ const Profile = () => {
       <div className='flex flex-col items-center'>
         <div className='max-w-full sn:w-540 mt-14'>
           <div className='bg-white py-14 px-16 shadow-form rounded'>
+            {uiState === 'signUp' && (
+              <SignUp onChange={onChange} setUiState={setUiState} />
+            )}
+            {uiState === 'confirmSignUp' && (
+              <ConfirmSignUp onChange={onChange} setUiState={setUiState} />
+            )}
             {uiState === 'signIn' && (
               <SignIn onChange={onChange} setUiState={setUiState} />
             )}
@@ -51,6 +61,12 @@ const Profile = () => {
                   Sign Out
                 </button>
               </div>
+            )}
+            {uiState === 'forgotPassword' && (
+              <ForgotPassword onChange={onChange} setUiState={setUiState}  />
+            )}
+            {uiState === 'forgotPasswordSubmit' && (
+              <ForgotPasswordSubmit onChange={onChange} />
             )}
           </div>
         </div>
