@@ -5,7 +5,7 @@ import Input from './Input'
 export default function ForgotPassword({ onChange, setUiState, forgotPassword }) {
   return (
     <div>
-      <p className='text-3xl font-black'>Forgot Password?</p>
+      <p className='text-3xl font-black'>Forgot your Password?</p>
       <div className='mt-10'>
         <label htmlFor='email' className='text-sm'>
           Email

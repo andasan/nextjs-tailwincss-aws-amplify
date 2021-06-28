@@ -14,23 +14,76 @@ const Profile = () => {
   const [uiState, setUiState] = useState(null)
   const [formstate, setFormState] = useState(initialState)
   const [user, setUser] = useState(null)
+  const { email, password, authCode } = formstate
 
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        setUser(user)
-        setUiState('signedIn')
-      } catch (error) {
-        setUser(null)
-        setUiState('signIn')
-      }
-    }
     checkUser()
+    console.log(user);
   }, [])
+
+  const checkUser = async () => {
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      setUser(user)
+      setUiState('signedIn')
+    } catch (error) {
+      setUser(null)
+      setUiState('signIn')
+    }
+  }
 
   const onChange = (e) => {
     setFormState({ ...formstate, [e.target.name]: e.target.value })
+  }
+
+  const signUp = async () => {
+    try {
+      await Auth.signUp({
+        username: email,
+        password,
+        attributes: {
+          email
+        }
+      })
+      setUiState('confirmSignUp')
+    } catch (error) {
+      console.log({error});
+    }
+  }
+  const confirmSignUp = async () => {
+    try {
+      await Auth.confirmSignUp(email, authCode)
+      setUiState('signedIn')
+      signIn()
+    } catch (error) {
+      console.log({error});
+    }
+  }
+  const signIn = async () => {
+    try {
+      await Auth.signIn(email, password)
+      setUiState('signedIn')
+      checkUser()
+    } catch (error) {
+      console.log({error});
+    }
+  }
+  const forgotPassword = async () => {
+    try {
+      await Auth.forgotPassword(email)
+      setUiState('forgotPasswordSubmit')
+    } catch (error) {
+      console.log({error});
+    }
+  }
+  const forgotPasswordSubmit = async () => {
+    try {
+      await Auth.forgotPasswordSubmit(email, authCode, password)
+      // setUiState('signIn')
+      signIn() //auto sign in
+    } catch (error) {
+      console.log({error});
+    }
   }
 
   return (
@@ -39,15 +92,15 @@ const Profile = () => {
         <div className='max-w-full sn:w-540 mt-14'>
           <div className='bg-white py-14 px-16 shadow-form rounded'>
             {uiState === 'signUp' && (
-              <SignUp onChange={onChange} setUiState={setUiState} />
+              <SignUp onChange={onChange} setUiState={setUiState} signUp={signUp } />
             )}
             {uiState === 'confirmSignUp' && (
-              <ConfirmSignUp onChange={onChange} setUiState={setUiState} />
+              <ConfirmSignUp onChange={onChange} setUiState={setUiState} confirmSignUp={confirmSignUp} />
             )}
             {uiState === 'signIn' && (
-              <SignIn onChange={onChange} setUiState={setUiState} />
+              <SignIn onChange={onChange} setUiState={setUiState} signIn={signIn} />
             )}
-            {uiState === 'signedIn' && (
+            {(uiState === 'signedIn' && user) && (
               <div>
                 <p className='text-x1'>Welcome, {user.attributes.email}</p>
                 <button
@@ -63,10 +116,10 @@ const Profile = () => {
               </div>
             )}
             {uiState === 'forgotPassword' && (
-              <ForgotPassword onChange={onChange} setUiState={setUiState}  />
+              <ForgotPassword onChange={onChange} setUiState={setUiState} forgotPassword={forgotPassword}  />
             )}
             {uiState === 'forgotPasswordSubmit' && (
-              <ForgotPasswordSubmit onChange={onChange} />
+              <ForgotPasswordSubmit onChange={onChange} forgotPasswordSubmit={forgotPasswordSubmit} />
             )}
           </div>
         </div>
